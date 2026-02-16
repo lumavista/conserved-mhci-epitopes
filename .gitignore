@@ -39,3 +39,6 @@ coverage/
 
 # Misc
 .cache/
+
+# Large data (do not track)
+data/published_epitopes.json
