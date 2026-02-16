@@ -57,7 +57,7 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
   const stream = req.query.stream === "1" || req.query.stream === "true";
 
   try {
-    const body = req.body as Partial<MhcPredictionParams> & { fastaContent?: string; useSample?: string };
+    const body = req.body as Partial<MhcPredictionParams> & { fastaContent?: string; useSample?: string | boolean };
     let fastaContent = body.fastaContent ?? "";
 
     if (req.file) {
