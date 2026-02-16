@@ -1,0 +1,8 @@
+services:
+  mhc-demo:
+    build: .
+    image: mhc-demo:latest
+    container_name: mhc-demo
+    ports:
+      - "5398:5398"
+    restart: unless-stopped
