@@ -16,6 +16,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@shared": path.resolve(__dirname, "../shared"),
+      // Avoid bundling plotly.js (large; causes OOM on 4GB systems). Load from CDN instead.
+      "plotly.js/dist/plotly": path.resolve(__dirname, "src/plotly-global.ts"),
+      "plotly.js": path.resolve(__dirname, "src/plotly-global.ts"),
     },
   },
   server: {

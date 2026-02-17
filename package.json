@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "dev": "tsx watch --tsconfig server/tsconfig.json --exclude './client/**' --exclude './**/.vite/**' server/src/index.ts",
-    "build": "vite build --config client/vite.config.ts && tsc -p server/tsconfig.json && tsc-alias -p server/tsconfig.json && node scripts/copy-server-scripts.mjs",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=2048 vite build --config client/vite.config.ts && tsc -p server/tsconfig.json && tsc-alias -p server/tsconfig.json && node scripts/copy-server-scripts.mjs",
     "start": "npm run build && cross-env NODE_ENV=production node dist/server/src/index.js",
     "preview": "vite preview --config client/vite.config.ts",
     "setup:msa": "node scripts/setup-msa.mjs"
