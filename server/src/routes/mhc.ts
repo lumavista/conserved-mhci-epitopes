@@ -113,7 +113,9 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
         if (Array.isArray(arr) && arr.length >= 2) {
           peptideRange = [Number(arr[0]) || 9, Number(arr[1]) || 10];
         }
-      } catch {}
+      } catch {
+        // ignore invalid JSON
+      }
     }
     const minConserved = Math.max(5, Math.min(100, Number(body.minConservedLength) || 10));
     const skipIedb = body.skipIedb === true;

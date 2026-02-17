@@ -10,17 +10,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** Project root: use cwd so production (dist/server/src/msa/) finds repo root and .venv. */
 function getProjectRoot(): string {
   const fromFile = path.resolve(__dirname, "..", "..", "..");
-  const inDist = fromFile.includes(path.sep + "dist" + path.sep) || fromFile.endsWith(path.sep + "dist");
+  const inDist =
+    fromFile.includes(path.sep + "dist" + path.sep) || fromFile.endsWith(path.sep + "dist");
   return inDist ? process.cwd() : fromFile;
 }
 
 const projectRoot = getProjectRoot();
-const runClustalScript = path.join(
-  projectRoot,
-  "server",
-  "scripts",
-  "run_clustal.py"
-);
+const runClustalScript = path.join(projectRoot, "server", "scripts", "run_clustal.py");
 
 function getPythonPath(): string {
   if (process.env.PYTHON_MSA_PATH) return process.env.PYTHON_MSA_PATH;

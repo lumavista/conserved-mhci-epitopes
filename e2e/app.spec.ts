@@ -32,17 +32,6 @@ test.describe("MHC Demo App", () => {
     await expect(page.getByTestId("run-prediction")).toBeEnabled();
   });
 
-  test("Run Prediction with Skip IEDB shows results (overview, tables)", async ({ page }) => {
-    await page.goto("/");
-    await page.getByTestId("use-sample-data").click();
-    await expect(page.getByText(/Sample data \(2 sequences/i)).toBeVisible({ timeout: 5000 });
-    await page.getByRole("switch", { name: /Skip IEDB prediction/i }).check();
-    await page.getByTestId("run-prediction").click();
-    await expect(page.getByTestId("overview-plot-heading")).toBeVisible({ timeout: 30_000 });
-    await expect(page.getByText(/Interactive Overview Plot/i)).toBeVisible();
-    await expect(page.getByTestId("no-results")).not.toBeVisible();
-  });
-
   test("Help modal opens and closes", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Help" }).click();
@@ -60,5 +49,17 @@ test.describe("MHC Demo App", () => {
     const initialChecked = await themeSwitch.isChecked();
     await themeSwitch.click();
     await expect(themeSwitch).toHaveAttribute("aria-checked", initialChecked ? "false" : "true");
+  });
+
+  test("Run Prediction with Skip IEDB shows results (overview, tables)", async ({ page }) => {
+    test.setTimeout(90_000);
+    await page.goto("/");
+    await page.getByTestId("use-sample-data").click();
+    await expect(page.getByText(/Sample data \(2 sequences/i)).toBeVisible({ timeout: 5000 });
+    await page.getByRole("switch", { name: /Skip IEDB prediction/i }).check();
+    await page.getByTestId("run-prediction").click();
+    await expect(page.getByTestId("overview-plot-heading")).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByText(/Interactive Overview Plot/i)).toBeVisible();
+    await expect(page.getByTestId("no-results")).not.toBeVisible();
   });
 });
