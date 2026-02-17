@@ -1,14 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Button,
-  Input,
-  Label,
-  RangeSlider,
-  Switch,
-} from "./ui";
+import { Card, CardHeader, CardContent, Button, Input, Label, RangeSlider, Switch } from "./ui";
 
 const ALLELES = ["HLA-A*01:01", "HLA-A*02:01", "HLA-B*07:02", "HLA-B*08:01"];
 
@@ -76,7 +67,7 @@ export function LeftPanel({
     if (!hasFasta || alleles.length === 0) return;
     onRun({
       fastaFile: usedSampleData ? null : fastaFile,
-      fastaContent: usedSampleData ? fastaContent : (fastaContent.trim() || undefined),
+      fastaContent: usedSampleData ? fastaContent : fastaContent.trim() || undefined,
       uniprotId: uniprotId.trim(),
       alleles,
       peptideLengthRange,
@@ -101,9 +92,7 @@ export function LeftPanel({
   const canRun = hasFasta && alleles.length > 0 && !loading;
 
   const toggleAllele = (a: string) => {
-    setAlleles((prev) =>
-      prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
-    );
+    setAlleles((prev) => (prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]));
   };
 
   return (
@@ -132,6 +121,7 @@ export function LeftPanel({
             className="w-full"
             onClick={loadSample}
             disabled={sampleLoading}
+            data-testid="use-sample-data"
           >
             {sampleLoading ? "Loading…" : "Use Sample Data"}
           </Button>
@@ -177,7 +167,12 @@ export function LeftPanel({
           </div>
 
           <div>
-            <Label>Peptide length: {peptideLengthRange[0] === peptideLengthRange[1] ? peptideLengthRange[0] : `${peptideLengthRange[0]}–${peptideLengthRange[1]}`}</Label>
+            <Label>
+              Peptide length:{" "}
+              {peptideLengthRange[0] === peptideLengthRange[1]
+                ? peptideLengthRange[0]
+                : `${peptideLengthRange[0]}–${peptideLengthRange[1]}`}
+            </Label>
             <RangeSlider
               min={8}
               max={14}
@@ -209,9 +204,13 @@ export function LeftPanel({
             />
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between" data-testid="skip-iedb-row">
             <Label>Skip IEDB prediction</Label>
-            <Switch checked={skipIedb} onCheckedChange={setSkipIedb} />
+            <Switch
+              checked={skipIedb}
+              onCheckedChange={setSkipIedb}
+              aria-label="Skip IEDB prediction"
+            />
           </div>
 
           <Button
@@ -219,6 +218,7 @@ export function LeftPanel({
             className="w-full py-3 font-semibold"
             onClick={handleRun}
             disabled={!canRun}
+            data-testid="run-prediction"
           >
             {loading ? "Running…" : "Run Prediction"}
           </Button>

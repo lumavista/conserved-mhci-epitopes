@@ -66,9 +66,7 @@ function AppContent() {
 
   const rightPanel = (
     <div className="mx-auto max-w-7xl space-y-4">
-      {loading && progress && (
-        <PredictionProgress progress={progress} />
-      )}
+      {loading && progress && <PredictionProgress progress={progress} />}
       {error && (
         <Card className="border-[var(--color-critical)]">
           <CardContent>
@@ -78,7 +76,10 @@ function AppContent() {
       )}
 
       {!data && !loading && !error && (
-        <Card className="flex min-h-[320px] flex-col items-center justify-center text-center">
+        <Card
+          className="flex min-h-[320px] flex-col items-center justify-center text-center"
+          data-testid="no-results"
+        >
           <CardContent className="max-w-md space-y-2">
             <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
               No results
@@ -103,7 +104,10 @@ function AppContent() {
             </p>
           )}
           <Card>
-            <div className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--color-text)]">
+            <div
+              className="mb-3 text-sm font-semibold uppercase tracking-wide text-[var(--color-text)]"
+              data-testid="overview-plot-heading"
+            >
               Interactive Overview Plot
             </div>
             <CardContent className="p-0 relative">

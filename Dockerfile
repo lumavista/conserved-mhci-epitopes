@@ -9,6 +9,7 @@ RUN npm ci
 COPY client ./client
 COPY server ./server
 COPY shared ./shared
+COPY scripts ./scripts
 RUN npm run build
 
 # Production stage
@@ -35,6 +36,7 @@ COPY server/scripts ./server/scripts
 
 # Use venv for Python deps (biopython)
 RUN python3 -m venv /app/.venv && /app/.venv/bin/pip install -r server/scripts/requirements.txt
+ENV PYTHON_MSA_PATH=/app/.venv/bin/python3
 
 EXPOSE 5398
 

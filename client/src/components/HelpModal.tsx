@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "./ui";
 
 interface HelpModalProps {
@@ -6,6 +7,15 @@ interface HelpModalProps {
 }
 
 export function HelpModal({ open, onClose }: HelpModalProps) {
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
@@ -26,7 +36,8 @@ export function HelpModal({ open, onClose }: HelpModalProps) {
         <div className="space-y-4 text-sm text-[var(--color-text)]">
           <p>
             This tool predicts MHC-I binding epitopes from protein sequences using the IEDB
-            NetMHCpan API. Upload a FASTA file (single or multiple sequences) or use the sample data.
+            NetMHCpan API. Upload a FASTA file (single or multiple sequences) or use the sample
+            data.
           </p>
           <h3 className="font-semibold">Workflow</h3>
           <ol className="list-decimal list-inside space-y-1">

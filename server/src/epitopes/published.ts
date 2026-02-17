@@ -41,11 +41,9 @@ export function findPublishedEpitopes(
   if (rows.length === 0) return [];
 
   const keepT = (r: PublishedDbRow) =>
-    (r.SourceFile ?? "").toLowerCase() === "tcell" &&
-    /positive/i.test(r.Assay ?? "");
+    (r.SourceFile ?? "").toLowerCase() === "tcell" && /positive/i.test(r.Assay ?? "");
   const keepM = (r: PublishedDbRow) =>
-    (r.SourceFile ?? "").toLowerCase() === "mhc" &&
-    !NEG_PAT.test(r.Assay ?? "");
+    (r.SourceFile ?? "").toLowerCase() === "mhc" && !NEG_PAT.test(r.Assay ?? "");
   rows = rows.filter((r) => keepT(r) || keepM(r));
   if (rows.length === 0) return [];
 

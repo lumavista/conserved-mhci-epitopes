@@ -9,12 +9,8 @@ export function getStoredTheme(): Theme {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-export function applyTheme(theme: Theme): void {
-  if (typeof document !== "undefined") {
-    document.documentElement.setAttribute("data-theme", theme);
-  }
-}
-
 export function applyStoredTheme(): void {
-  applyTheme(getStoredTheme());
+  if (typeof document !== "undefined") {
+    document.documentElement.setAttribute("data-theme", getStoredTheme());
+  }
 }

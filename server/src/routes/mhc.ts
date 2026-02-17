@@ -57,7 +57,10 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
   const stream = req.query.stream === "1" || req.query.stream === "true";
 
   try {
-    const body = req.body as Partial<MhcPredictionParams> & { fastaContent?: string; useSample?: string | boolean };
+    const body = req.body as Partial<MhcPredictionParams> & {
+      fastaContent?: string;
+      useSample?: string | boolean;
+    };
     let fastaContent = body.fastaContent ?? "";
 
     if (req.file) {
@@ -95,16 +98,17 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
     }
     let peptideRange: [number, number] = [9, 10];
     if (Array.isArray(body.peptideLengthRange) && body.peptideLengthRange.length >= 2) {
-      peptideRange = [Number(body.peptideLengthRange[0]) || 9, Number(body.peptideLengthRange[1]) || 10];
+      peptideRange = [
+        Number(body.peptideLengthRange[0]) || 9,
+        Number(body.peptideLengthRange[1]) || 10,
+      ];
     } else if (typeof body.peptideLengthRange === "string") {
       try {
         const arr = JSON.parse(body.peptideLengthRange);
         if (Array.isArray(arr) && arr.length >= 2) {
           peptideRange = [Number(arr[0]) || 9, Number(arr[1]) || 10];
         }
-      } catch {
-        /* keep default peptideRange */
-      }
+      } catch {}
     }
     const minConserved = Math.max(5, Math.min(100, Number(body.minConservedLength) || 10));
     const skipIedb = body.skipIedb === true;
@@ -119,14 +123,21 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
       (_, i) => peptideRange[0]! + i
     );
     const totalIedbCalls = skipIedb ? 0 : alleles.length * peptideLengths.length;
-    const totalEtaSec = (skipIedb ? 0 : totalIedbCalls * IEDB_CALL_ETA_SEC) + (totalIedbCalls > 0 ? MSA_ETA_SEC : 0);
+    const totalEtaSec =
+      (skipIedb ? 0 : totalIedbCalls * IEDB_CALL_ETA_SEC) + (totalIedbCalls > 0 ? MSA_ETA_SEC : 0);
 
     if (stream) {
       res.setHeader("Content-Type", "application/x-ndjson");
       res.status(200);
     }
 
-    const progress = (step: string, message: string, percent: number, etaSec?: number, current?: string) => {
+    const progress = (
+      step: string,
+      message: string,
+      percent: number,
+      etaSec?: number,
+      current?: string
+    ) => {
       if (stream) {
         writeProgress(res, { type: "progress", step, message, percent, etaSec, current });
       }
@@ -143,7 +154,12 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
     let consensusResult;
     try {
       if (records.length === 1) {
-        progress("consensus", "Single sequence (no alignment needed)", 15, totalEtaSec - MSA_ETA_SEC);
+        progress(
+          "consensus",
+          "Single sequence (no alignment needed)",
+          15,
+          totalEtaSec - MSA_ETA_SEC
+        );
         consensusResult = consensusSingle(records[0]!, minConserved);
       } else {
         progress("consensus", "Running multi-sequence alignment (Clustal Omega)…", 10, totalEtaSec);
@@ -189,7 +205,7 @@ router.post("/mhc/predict", upload.single("fastaFile"), async (req, res) => {
             remaining * IEDB_CALL_ETA_SEC,
             `${allele} ${len}mer`
           );
-          const df = await queryIedb([], allele, len, consensusUngapped);
+          const df = await queryIedb(allele, len, consensusUngapped);
           for (const row of df) {
             const pos = consensusUngapped.indexOf(row.Peptide);
             if (pos >= 0) {

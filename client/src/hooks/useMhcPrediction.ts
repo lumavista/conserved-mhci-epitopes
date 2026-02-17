@@ -70,74 +70,77 @@ export function useMhcPrediction(): UseMhcPredictionResult {
   const [error, setError] = useState<Error | null>(null);
   const [progress, setProgress] = useState<PredictionProgress | null>(null);
 
-  const runPrediction = useCallback(async (params: {
-    fastaFile: File | null;
-    fastaContent?: string;
-    uniprotId: string;
-    alleles: string[];
-    peptideLengthRange: [number, number];
-    minConservedLength: number;
-    highlightRegions: boolean;
-    skipIedb: boolean;
-  }) => {
-    setLoading(true);
-    setError(null);
-    setProgress(null);
-    try {
-      let res: Response;
-      if (params.fastaFile) {
-        const formData = new FormData();
-        formData.append("fastaFile", params.fastaFile);
-        formData.append("uniprotId", params.uniprotId);
-        formData.append("alleles", JSON.stringify(params.alleles));
-        formData.append("peptideLengthRange", JSON.stringify(params.peptideLengthRange));
-        formData.append("minConservedLength", String(params.minConservedLength));
-        formData.append("skipIedb", String(params.skipIedb));
-        res = await fetch(PREDICT_URL, { method: "POST", body: formData });
-      } else {
-        res = await fetch(PREDICT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fastaContent: params.fastaContent,
-            uniprotId: params.uniprotId,
-            alleles: params.alleles,
-            peptideLengthRange: params.peptideLengthRange,
-            minConservedLength: params.minConservedLength,
-            skipIedb: params.skipIedb,
-          }),
-        });
-      }
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody.message ?? `HTTP ${res.status}`);
-      }
-
-      const body = res.body;
-      if (!body) throw new Error("No response body");
-
-      const reader = body.getReader();
-      const result = await readNdjsonStream<MhcPredictionResult>(reader, (event) => {
-        if (event.type === "progress") {
-          setProgress({
-            step: event.step,
-            message: event.message,
-            percent: event.percent,
-            etaSec: event.etaSec,
-            current: event.current,
+  const runPrediction = useCallback(
+    async (params: {
+      fastaFile: File | null;
+      fastaContent?: string;
+      uniprotId: string;
+      alleles: string[];
+      peptideLengthRange: [number, number];
+      minConservedLength: number;
+      highlightRegions: boolean;
+      skipIedb: boolean;
+    }) => {
+      setLoading(true);
+      setError(null);
+      setProgress(null);
+      try {
+        let res: Response;
+        if (params.fastaFile) {
+          const formData = new FormData();
+          formData.append("fastaFile", params.fastaFile);
+          formData.append("uniprotId", params.uniprotId);
+          formData.append("alleles", JSON.stringify(params.alleles));
+          formData.append("peptideLengthRange", JSON.stringify(params.peptideLengthRange));
+          formData.append("minConservedLength", String(params.minConservedLength));
+          formData.append("skipIedb", String(params.skipIedb));
+          res = await fetch(PREDICT_URL, { method: "POST", body: formData });
+        } else {
+          res = await fetch(PREDICT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              fastaContent: params.fastaContent,
+              uniprotId: params.uniprotId,
+              alleles: params.alleles,
+              peptideLengthRange: params.peptideLengthRange,
+              minConservedLength: params.minConservedLength,
+              skipIedb: params.skipIedb,
+            }),
           });
         }
-      });
-      setData(result);
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error("Prediction failed"));
-      setData(null);
-    } finally {
-      setLoading(false);
-      setProgress(null);
-    }
-  }, []);
+
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => ({}));
+          throw new Error(errBody.message ?? `HTTP ${res.status}`);
+        }
+
+        const body = res.body;
+        if (!body) throw new Error("No response body");
+
+        const reader = body.getReader();
+        const result = await readNdjsonStream<MhcPredictionResult>(reader, (event) => {
+          if (event.type === "progress") {
+            setProgress({
+              step: event.step,
+              message: event.message,
+              percent: event.percent,
+              etaSec: event.etaSec,
+              current: event.current,
+            });
+          }
+        });
+        setData(result);
+      } catch (e) {
+        setError(e instanceof Error ? e : new Error("Prediction failed"));
+        setData(null);
+      } finally {
+        setLoading(false);
+        setProgress(null);
+      }
+    },
+    []
+  );
 
   return { data, loading, error, progress, runPrediction };
 }

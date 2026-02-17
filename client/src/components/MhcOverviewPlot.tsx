@@ -72,7 +72,12 @@ export function MhcOverviewPlot({
         y: selectedA.map((r) => r.Allele),
         type: "scatter",
         mode: "markers",
-        marker: { size: 14, color: "#1f77b4", symbol: "circle", line: { color: "#1f77b4", width: 1.5 } },
+        marker: {
+          size: 14,
+          color: "#1f77b4",
+          symbol: "circle",
+          line: { color: "#1f77b4", width: 1.5 },
+        },
         text: selectedA.map((r) =>
           "Peptide" in r ? `<b>Selected:</b> ${r.Peptide}<br>Allele: ${r.Allele}` : ""
         ),

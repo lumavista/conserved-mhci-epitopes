@@ -6,7 +6,8 @@ import ViteExpress from "vite-express";
 import mhcRouter from "./routes/mhc.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(__dirname, "../..");
+// Use cwd so production (run from dist/server/src) and dev both resolve project root
+const projectRoot = process.cwd();
 const isProduction = process.env.NODE_ENV === "production";
 
 const app = express();

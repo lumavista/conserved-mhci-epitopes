@@ -25,15 +25,30 @@ This creates a Python venv at `.venv` and installs Biopython. Requires Python 3 
 
 ## Commands
 
-| Command           | Description                                          |
-|-------------------|------------------------------------------------------|
-| `npm run setup:msa` | One-time setup: create Python venv + install Biopython |
-| `npm run dev`     | Run development (port 3000)                          |
-| `npm run build`| Build for production          |
-| `npm start`    | Build and run production (port 5398) |
-| `npm run preview` | Preview built client      |
+| Command               | Description                                            |
+| --------------------- | ------------------------------------------------------ |
+| `npm run setup:msa`   | One-time setup: create Python venv + install Biopython |
+| `npm run dev`         | Run development (port 3000)                            |
+| `npm run build`       | Build for production                                   |
+| `npm start`           | Build and run production (port 5398)                   |
+| `npm run preview`     | Preview built client                                   |
+| `npm run test:e2e`    | Run end-to-end tests (Playwright)                      |
+| `npm run test:e2e:ui` | Run E2E tests with Playwright UI                       |
 
 **Environment:** `PORT` (default 3000 for dev, 5398 for production). Set in `.env` or environment.
+
+## Testing
+
+- **Unit tests:** `npm test` (Vitest).
+- **E2E tests:** `npm run test:e2e` — starts the dev server and runs Playwright against the full app. Uses sample data and "Skip IEDB" so runs are fast and offline-friendly. See [docs/E2E-TESTING.md](docs/E2E-TESTING.md) for strategy, flows, and CI.
+
+  **First-time setup:** Install Playwright browsers once (required before running E2E tests):
+
+  ```bash
+  npx playwright install
+  ```
+
+  On **Linux**, if you see `libnspr4.so` or "missing dependencies" errors, install system libs first: **`npx playwright install --with-deps`** (see [E2E docs](docs/E2E-TESTING.md)).
 
 ## Development
 
@@ -80,7 +95,7 @@ To use a different host port: `-p 8080:5398` (host:container). The container alw
 3. Optionally enter UniProt ID for published epitope lookup (requires local DB)
 4. Select HLA alleles, peptide length range, and other options
 5. Click "Run Prediction"
-6. View the overview plot and tables; download results as Excel
+6. View the overview plot and tables; download results as CSV
 
 ## Project Structure
 
@@ -98,15 +113,17 @@ mhc-demo-app/
 │       ├── parsers/    # fasta.ts (multi-seq)
 │       ├── msa/        # consensus.ts (single + local Clustal for multi)
 │       ├── iedb/       # client.ts (NetMHCpan API)
-│       ├── epitopes/   # published.ts (loads data/published_epitopes.json from R export)
+│       ├── epitopes/   # published.ts (loads data/published_epitopes.json)
 │       └── routes/     # mhc.ts
 ├── shared/            # types.ts
+├── e2e/               # Playwright E2E specs
+├── docs/              # E2E-TESTING.md, REFACTOR-PLAN.md
 └── data/              # sample.fasta
 ```
 
 ## Notes
 
-- **Published epitopes:** The Node app loads **one small JSON file per UniProt ID** from `data/published_epitopes/{UniProtID}.json` (e.g. `P18272.json`), so only the requested protein’s data is read. Generate these from the Shiny app’s RDS: from `mhc-demo-shiny/` run `Rscript export_db_to_json.R` (requires R with `data.table` and `jsonlite`). This reads `mhc_db/combined_db.rds` and writes per-ID files under `../data/published_epitopes/`. Lookup in `server/src/epitopes/published.ts` mirrors `find_published_epitopes_local()` in `mhc-demo-shiny/app.R`.
+- **Published epitopes:** The app loads `data/published_epitopes.json` (a single JSON array of rows with `MoleculeParentIRI`, `SourceFile`, `Assay`, `Peptide`, `Allele`, `EpitopeID`). Filtering by UniProt ID is done in memory. See [data/README.md](data/README.md) for format and sample data.
 - **Multi-sequence MSA:** Uses local Clustal Omega only (no EBI API) via `server/scripts/run_clustal.py` (Python + Biopython); falls back to first sequence if Python/clustalo fails.
 - **Sample data:** Single source of truth is `data/sample.fasta`; "Use Sample Data" and GET `/api/mhc/sample` serve that file.
 - **IEDB:** Uses tools-cluster-interface.iedb.org; enable "Skip IEDB" for faster testing without API calls.

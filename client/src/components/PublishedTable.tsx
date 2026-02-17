@@ -160,11 +160,20 @@ export function PublishedTable({
                               onSelectionChange!([r.Main_Epitope_ID]);
                               setAnchorId(r.Main_Epitope_ID);
                             } else {
-                              const anchorIdx = sorted.findIndex((x) => x.Main_Epitope_ID === anchorId);
-                              const clickIdx = sorted.findIndex((x) => x.Main_Epitope_ID === r.Main_Epitope_ID);
+                              const anchorIdx = sorted.findIndex(
+                                (x) => x.Main_Epitope_ID === anchorId
+                              );
+                              const clickIdx = sorted.findIndex(
+                                (x) => x.Main_Epitope_ID === r.Main_Epitope_ID
+                              );
                               if (anchorIdx >= 0 && clickIdx >= 0) {
-                                const [lo, hi] = anchorIdx <= clickIdx ? [anchorIdx, clickIdx] : [clickIdx, anchorIdx];
-                                onSelectionChange!(sorted.slice(lo, hi + 1).map((x) => x.Main_Epitope_ID));
+                                const [lo, hi] =
+                                  anchorIdx <= clickIdx
+                                    ? [anchorIdx, clickIdx]
+                                    : [clickIdx, anchorIdx];
+                                onSelectionChange!(
+                                  sorted.slice(lo, hi + 1).map((x) => x.Main_Epitope_ID)
+                                );
                               }
                             }
                           } else if (e.ctrlKey || e.metaKey) {

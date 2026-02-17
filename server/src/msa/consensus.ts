@@ -6,8 +6,21 @@ import type { FastaRecord } from "../parsers/fasta.js";
 import type { ConservedRegion } from "@shared/types.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(__dirname, "..", "..", "..");
-const runClustalScript = path.join(projectRoot, "server", "scripts", "run_clustal.py");
+
+/** Project root: use cwd so production (dist/server/src/msa/) finds repo root and .venv. */
+function getProjectRoot(): string {
+  const fromFile = path.resolve(__dirname, "..", "..", "..");
+  const inDist = fromFile.includes(path.sep + "dist" + path.sep) || fromFile.endsWith(path.sep + "dist");
+  return inDist ? process.cwd() : fromFile;
+}
+
+const projectRoot = getProjectRoot();
+const runClustalScript = path.join(
+  projectRoot,
+  "server",
+  "scripts",
+  "run_clustal.py"
+);
 
 function getPythonPath(): string {
   if (process.env.PYTHON_MSA_PATH) return process.env.PYTHON_MSA_PATH;
@@ -70,9 +83,8 @@ export function consensusSingle(record: FastaRecord, minConservedLength: number)
   vec.forEach((c, i) => {
     if (c !== "-") mapUngapToAln.push(i + 1);
   });
-  const conservedAln = seq.length >= minConservedLength
-    ? [{ aln_start: 1, aln_length: seq.length }]
-    : [];
+  const conservedAln =
+    seq.length >= minConservedLength ? [{ aln_start: 1, aln_length: seq.length }] : [];
   return {
     consensusVec: vec,
     consensusUngapped: ungapped,
@@ -116,9 +128,7 @@ export async function consensusMulti(
     };
   }
 
-  const hint = clustalStderr
-    ? ` ${clustalStderr}`
-    : "";
+  const hint = clustalStderr ? ` ${clustalStderr}` : "";
   throw new Error(
     `Multi-sequence alignment failed for ${records.length} sequences.` +
       ` Ensure Python 3, Biopython, and Clustal Omega are installed (run 'npm run setup:msa').` +
@@ -141,8 +151,12 @@ function runLocalClustal(fastaContent: string, expectedRows: number): Promise<Cl
 
     let stdout = "";
     let stderr = "";
-    child.stdout.setEncoding("utf8").on("data", (chunk) => { stdout += chunk; });
-    child.stderr.setEncoding("utf8").on("data", (chunk) => { stderr += chunk; });
+    child.stdout.setEncoding("utf8").on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.setEncoding("utf8").on("data", (chunk) => {
+      stderr += chunk;
+    });
 
     child.on("error", (err) => resolve({ aln: null, stderr: String(err.message) }));
     child.on("close", (code) => {
@@ -158,13 +172,14 @@ function runLocalClustal(fastaContent: string, expectedRows: number): Promise<Cl
           resolve({ aln: null, stderr: `Expected ${expectedRows} rows, got ${rows?.length ?? 0}` });
           return;
         }
-        const minInputLen = Math.min(...rows.map((r) => (r.sequence ?? "").replace(/-/g, "").length));
+        const minInputLen = Math.min(
+          ...rows.map((r) => (r.sequence ?? "").replace(/-/g, "").length)
+        );
         const aln: string[][] = rows.map((r) => (r.sequence ?? "").toUpperCase().split(""));
         const alnLen = aln[0]?.length ?? 0;
         const sameLength = aln.every((row) => row.length === alnLen);
-        const consensusUngappedLen = alnLen > 0
-          ? (getConsensusFromAlignedMatrix(aln).filter((c) => c !== "-").length)
-          : 0;
+        const consensusUngappedLen =
+          alnLen > 0 ? getConsensusFromAlignedMatrix(aln).filter((c) => c !== "-").length : 0;
         if (!sameLength || consensusUngappedLen < Math.min(50, Math.floor(minInputLen / 2))) {
           resolve({ aln: null, stderr: "Alignment validation failed (row lengths or consensus)" });
           return;
@@ -180,4 +195,3 @@ function runLocalClustal(fastaContent: string, expectedRows: number): Promise<Cl
     });
   });
 }
-

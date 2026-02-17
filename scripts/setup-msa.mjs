@@ -30,7 +30,9 @@ if (!useVenv) {
   if (venv.status === 0) {
     useVenv = true;
   } else {
-    console.log("venv not available (install python3-venv for isolation). Using pip3 --user fallback...\n");
+    console.log(
+      "venv not available (install python3-venv for isolation). Using pip3 --user fallback...\n"
+    );
   }
 }
 
@@ -54,16 +56,24 @@ if (useVenv) {
     }
     if (pip.status !== 0) {
       console.log("Using system pip to install into venv...");
-      const sitePackages = spawnSync(venvPython, ["-c", "import site; print(site.getsitepackages()[0])"], {
-        cwd: root,
-        encoding: "utf8",
-      });
+      const sitePackages = spawnSync(
+        venvPython,
+        ["-c", "import site; print(site.getsitepackages()[0])"],
+        {
+          cwd: root,
+          encoding: "utf8",
+        }
+      );
       const target = sitePackages.stdout?.trim();
       if (target) {
-        pip = spawnSync("python3", ["-m", "pip", "install", "--target", target, "-r", requirements], {
-          cwd: root,
-          stdio: "inherit",
-        });
+        pip = spawnSync(
+          "python3",
+          ["-m", "pip", "install", "--target", target, "-r", requirements],
+          {
+            cwd: root,
+            stdio: "inherit",
+          }
+        );
       }
     }
   }
@@ -76,10 +86,14 @@ if (useVenv) {
     stdio: "inherit",
   });
   if (pip.status !== 0) {
-    console.error("pip install failed. Try: apt install python3-venv python3-pip && npm run setup:msa");
+    console.error(
+      "pip install failed. Try: apt install python3-venv python3-pip && npm run setup:msa"
+    );
     process.exit(1);
   }
-  console.log("\nMSA setup complete. The server will use system python3 (biopython installed for user).");
+  console.log(
+    "\nMSA setup complete. The server will use system python3 (biopython installed for user)."
+  );
 }
 
 console.log("Run 'npm run dev' for development.\n");

@@ -1,0 +1,14 @@
+# Dependencies and build
+node_modules/
+dist/
+.venv/
+
+# Lock files
+package-lock.json
+*.lock
+
+# Generated / vendored
+coverage/
+.vite/
+*.min.js
+data/published_epitopes.json

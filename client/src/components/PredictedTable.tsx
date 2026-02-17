@@ -28,9 +28,10 @@ export function PredictedTable({
     return [...data].sort((a, b) => {
       const va = a[sortBy];
       const vb = b[sortBy];
-      const cmp = typeof va === "number" && typeof vb === "number"
-        ? va - vb
-        : String(va ?? "").localeCompare(String(vb ?? ""));
+      const cmp =
+        typeof va === "number" && typeof vb === "number"
+          ? va - vb
+          : String(va ?? "").localeCompare(String(vb ?? ""));
       return sortAsc ? cmp : -cmp;
     });
   }, [data, sortBy, sortAsc]);
@@ -39,9 +40,7 @@ export function PredictedTable({
 
   const toggleRow = (id: number) => {
     onSelectionChange(
-      selectedRowIds.includes(id)
-        ? selectedRowIds.filter((x) => x !== id)
-        : [...selectedRowIds, id]
+      selectedRowIds.includes(id) ? selectedRowIds.filter((x) => x !== id) : [...selectedRowIds, id]
     );
     setAnchorRowId(id);
   };
@@ -56,7 +55,10 @@ export function PredictedTable({
         const clickIdx = sorted.findIndex((r) => r.RowID === id);
         if (anchorIdx >= 0 && clickIdx >= 0) {
           const [lo, hi] = anchorIdx <= clickIdx ? [anchorIdx, clickIdx] : [clickIdx, anchorIdx];
-          const rangeIds = sorted.slice(lo, hi + 1).map((r) => r.RowID!).filter(Boolean);
+          const rangeIds = sorted
+            .slice(lo, hi + 1)
+            .map((r) => r.RowID!)
+            .filter(Boolean);
           onSelectionChange(rangeIds);
         }
       }
@@ -152,8 +154,14 @@ export function PredictedTable({
                         const anchorIdx = sorted.findIndex((x) => x.RowID === anchorRowId);
                         const clickIdx = sorted.findIndex((x) => x.RowID === r.RowID);
                         if (anchorIdx >= 0 && clickIdx >= 0) {
-                          const [lo, hi] = anchorIdx <= clickIdx ? [anchorIdx, clickIdx] : [clickIdx, anchorIdx];
-                          onSelectionChange(sorted.slice(lo, hi + 1).map((x) => x.RowID!).filter(Boolean));
+                          const [lo, hi] =
+                            anchorIdx <= clickIdx ? [anchorIdx, clickIdx] : [clickIdx, anchorIdx];
+                          onSelectionChange(
+                            sorted
+                              .slice(lo, hi + 1)
+                              .map((x) => x.RowID!)
+                              .filter(Boolean)
+                          );
                         }
                       }
                     } else if (e.ctrlKey || e.metaKey) {
@@ -172,9 +180,7 @@ export function PredictedTable({
                 <td className="px-2 py-1">{r.Allele}</td>
                 <td className="px-2 py-1">{r.Rank?.toFixed(2)}</td>
                 <td className="px-2 py-1">{r.Affinity?.toFixed(1)}</td>
-                <td
-                  className={`px-2 py-1 ${AFFINITY_CLASS_NAMES[r.AffinityClass] ?? ""}`}
-                >
+                <td className={`px-2 py-1 ${AFFINITY_CLASS_NAMES[r.AffinityClass] ?? ""}`}>
                   {r.AffinityClass}
                 </td>
                 <td className="px-2 py-1">{r.Start}</td>

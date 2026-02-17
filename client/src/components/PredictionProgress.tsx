@@ -35,9 +35,7 @@ export function PredictionProgress({ progress }: PredictionProgressProps) {
           style={{ width: `${Math.min(100, Math.max(0, progress.percent))}%` }}
         />
       </div>
-      {eta && (
-        <p className="text-xs text-[var(--color-text-muted)]">{eta}</p>
-      )}
+      {eta && <p className="text-xs text-[var(--color-text-muted)]">{eta}</p>}
     </div>
   );
 }

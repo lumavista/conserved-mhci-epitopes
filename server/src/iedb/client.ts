@@ -44,7 +44,6 @@ function parseIedbTsv(text: string): PredictedEpitope[] {
 }
 
 export async function queryIedb(
-  _peptides: string[],
   allele: string,
   length: number,
   sequence: string,
@@ -90,12 +89,10 @@ export async function queryIedb(
       if (attempt < maxRetries) {
         await new Promise((r) => setTimeout(r, 2000));
       } else {
-        const msg =
-          e instanceof Error
-            ? e.message
-            : String(e);
+        const msg = e instanceof Error ? e.message : String(e);
         throw new Error(
-          `IEDB request failed (allele=${allele} length=${length} seqLen=${sequence.length}): ${msg}`
+          `IEDB request failed (allele=${allele} length=${length} seqLen=${sequence.length}): ${msg}`,
+          { cause: e }
         );
       }
     }

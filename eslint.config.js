@@ -3,7 +3,17 @@ import prettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
 export default [
-  { ignores: ["dist", "node_modules", "**/node_modules/**", "*.min.js"] },
+  {
+    ignores: [
+      "dist",
+      "node_modules",
+      "**/node_modules/**",
+      "*.min.js",
+      ".vite",
+      "coverage",
+      "package-lock.json",
+    ],
+  },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -15,4 +25,10 @@ export default [
     },
   },
   prettier,
+  {
+    files: ["scripts/**"],
+    languageOptions: {
+      globals: { process: "readonly", console: "readonly" },
+    },
+  },
 ];
