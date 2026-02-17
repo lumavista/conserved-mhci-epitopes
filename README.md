@@ -35,7 +35,7 @@ This creates a Python venv at `.venv` and installs Biopython. Requires Python 3 
 | `npm run test:e2e`    | Run end-to-end tests (Playwright)                      |
 | `npm run test:e2e:ui` | Run E2E tests with Playwright UI                       |
 
-**Environment:** `PORT` (default 3000 for dev, 5398 for production). Set in `.env` or environment.
+**Environment:** `PORT` (default 3000 for dev, 5398 for production). Optional: `PYTHON_MSA_PATH`. Copy `.env.example` to `.env` and adjust; see [docs/SETUP-EVALUATION.md](docs/SETUP-EVALUATION.md) for details.
 
 ## Testing
 
@@ -68,7 +68,7 @@ Builds the client, builds the server, and runs everything on port 5398 (or `PORT
 
 ### Docker
 
-The image uses **port 5398** and is intended to run as container **mhc-demo** by convention.
+The image uses **port 5398** and is intended to run as container **mhc-demo** by convention. It includes a **health check** (`GET /api/health`); override the host port with `PORT=8080 docker compose up -d` if needed.
 
 **Option 1 – Docker Compose (recommended)**
 
@@ -77,7 +77,7 @@ docker compose build
 docker compose up -d
 ```
 
-Stop and remove: `docker compose down`.
+Stop and remove: `docker compose down`. To mount your own `data/` (e.g. `published_epitopes.json`), uncomment the `volumes` section in `docker-compose.yml`.
 
 **Option 2 – Plain Docker**
 

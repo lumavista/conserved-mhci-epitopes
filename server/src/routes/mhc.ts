@@ -15,6 +15,11 @@ import type {
 import type { PredictionStreamEvent } from "@shared/types.js";
 
 const router = Router();
+
+router.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },

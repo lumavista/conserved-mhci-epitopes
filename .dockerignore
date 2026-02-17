@@ -1,0 +1,54 @@
+# Dependencies (reinstalled in image)
+node_modules/
+.venv/
+
+# Build output (rebuilt in builder stage)
+dist/
+
+# Vite / dev
+.vite/
+*.local
+
+# Environment (use env at runtime, not in image)
+.env
+.env.*
+!.env.example
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test / coverage / E2E
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/
+e2e/
+
+# Docs / tooling (not needed in image)
+docs/
+*.md
+!data/README.md
+.eslintcache
+.cache/
+*.tsbuildinfo
+.prettierrc
+.prettierignore
+eslint.config.js
+playwright.config.ts
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

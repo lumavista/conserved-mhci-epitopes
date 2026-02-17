@@ -149,7 +149,7 @@ function AppContent() {
       )}
 
       <footer className="border-t border-[var(--color-border)] pt-4 font-mono text-[10px] text-[var(--color-text-muted)]">
-        Version 0.8.0 · © 2025 LumaVista Bio · IEDB MHC Binding API
+        Version 0.9.0 · © 2025 LumaVista Bio · IEDB MHC Binding API
       </footer>
     </div>
   );

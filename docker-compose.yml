@@ -4,5 +4,14 @@ services:
     image: mhc-demo:latest
     container_name: mhc-demo
     ports:
-      - "5398:5398"
+      - "${PORT:-5398}:5398"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "scripts/healthcheck.mjs"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    # Optional: mount local data (e.g. published_epitopes.json) without rebuilding
+    # volumes:
+    #   - ./data:/app/data:ro
