@@ -1,5 +1,9 @@
 # Conserved Human MHC-I Epitopes
 
+[![Docker Pulls](https://img.shields.io/docker/pulls/lumavista/mhc-demo.svg)](https://hub.docker.com/r/lumavista/mhc-demo)
+
+[View on Docker Hub](https://hub.docker.com/r/lumavista/mhc-demo)
+
 React/TypeScript web app for alignment-consistent consensus MHC-I epitope prediction.
 
 ## Tech Stack
@@ -69,6 +73,12 @@ Builds the client, builds the server, and runs everything on port 5398 (or `PORT
 ### Docker
 
 The image uses **port 5398** and is intended to run as container **mhc-demo** by convention. It includes a **health check** (`GET /api/health`); override the host port with `PORT=8080 docker compose up -d` if needed.
+
+**Pull from Docker Hub:**
+
+```bash
+docker pull lumavista/mhc-demo:latest
+```
 
 **Option 1 – Docker Compose (recommended)**
 
