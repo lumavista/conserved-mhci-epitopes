@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import zlib from "zlib";
 import type { PublishedEpitope } from "@shared/types.js";
 
 interface PublishedDbRow {
@@ -12,14 +13,37 @@ interface PublishedDbRow {
 }
 
 let db: PublishedDbRow[] | null = null;
-const publishedEpitopesPath = path.join(process.cwd(), "data", "published_epitopes.json");
+const dataDir = path.join(process.cwd(), "data");
+const publishedEpitopesGz = path.join(dataDir, "published_epitopes.json.gz");
+const publishedEpitopesJson = path.join(dataDir, "published_epitopes.json");
 
 const NEG_PAT = /negative|no\s*binding|not\s*detected|non.?binding|no\s*activity/i;
 
+function loadFromGz(): string | null {
+  try {
+    const compressed = fs.readFileSync(publishedEpitopesGz);
+    return zlib.gunzipSync(compressed).toString("utf-8");
+  } catch {
+    return null;
+  }
+}
+
+function loadFromJson(): string | null {
+  try {
+    return fs.readFileSync(publishedEpitopesJson, "utf-8");
+  } catch {
+    return null;
+  }
+}
+
 export function loadPublishedDb(): void {
   if (db !== null) return;
+  const raw = loadFromGz() ?? loadFromJson();
+  if (!raw) {
+    db = [];
+    return;
+  }
   try {
-    const raw = fs.readFileSync(publishedEpitopesPath, "utf-8");
     const parsed = JSON.parse(raw) as unknown;
     db = Array.isArray(parsed) ? parsed : [];
   } catch {

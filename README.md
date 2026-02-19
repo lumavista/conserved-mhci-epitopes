@@ -27,12 +27,14 @@ npm run setup:msa
 
 This creates a Python venv at `.venv` and installs Biopython. Requires Python 3 and Clustal Omega on PATH (e.g. `apt install python3 clustalo` on Debian/Ubuntu). If unavailable, the server falls back to using the first sequence only.
 
+**Published epitopes database:** The repo includes `data/published_epitopes.json.gz` (~21MB compressed). The server uses this by default; it falls back to `data/published_epitopes.json` if present.
+
 ## Commands
 
-| Command               | Description                                            |
-| --------------------- | ------------------------------------------------------ |
-| `npm run setup:msa`   | One-time setup: create Python venv + install Biopython |
-| `npm run dev`         | Run development (port 3000)                            |
+| Command                 | Description                                              |
+| ----------------------- | -------------------------------------------------------- |
+| `npm run setup:msa`      | One-time setup: create Python venv + install Biopython   |
+| `npm run dev`            | Run development (port 3000)                              |
 | `npm run build`       | Build for production                                   |
 | `npm start`           | Build and run production (port 5398)                   |
 | `npm run preview`     | Preview built client                                   |
@@ -87,7 +89,7 @@ docker compose build
 docker compose up -d
 ```
 
-Stop and remove: `docker compose down`. To mount your own `data/` (e.g. `published_epitopes.json`), uncomment the `volumes` section in `docker-compose.yml`.
+Stop and remove: `docker compose down`. To mount your own `data/` (e.g. override `published_epitopes.json.gz`), uncomment the `volumes` section in `docker-compose.yml`.
 
 **Option 2 – Plain Docker**
 
@@ -133,7 +135,7 @@ mhc-demo-app/
 
 ## Notes
 
-- **Published epitopes:** The app loads `data/published_epitopes.json` (a single JSON array of rows with `MoleculeParentIRI`, `SourceFile`, `Assay`, `Peptide`, `Allele`, `EpitopeID`). Filtering by UniProt ID is done in memory. See [data/README.md](data/README.md) for format and sample data.
+- **Published epitopes:** The app loads `data/published_epitopes.json.gz` first (included in repo), then falls back to `data/published_epitopes.json`. Data is a JSON array of rows with `MoleculeParentIRI`, `SourceFile`, `Assay`, `Peptide`, `Allele`, `EpitopeID`. Filtering by UniProt ID is done in memory. See [data/README.md](data/README.md) for format.
 - **Multi-sequence MSA:** Uses local Clustal Omega only (no EBI API) via `server/scripts/run_clustal.py` (Python + Biopython); falls back to first sequence if Python/clustalo fails.
 - **Sample data:** Single source of truth is `data/sample.fasta`; "Use Sample Data" and GET `/api/mhc/sample` serve that file.
 - **IEDB:** Uses tools-cluster-interface.iedb.org; enable "Skip IEDB" for faster testing without API calls.
