@@ -156,12 +156,6 @@ function AppContent() {
         onHelpClick={() => setHelpOpen(true)}
         onThemeToggle={toggleTheme}
         theme={theme}
-        onReportClick={handleDownloadPredicted}
-        reportDisabled={!data?.predicted?.length}
-        reportLabel="Download predicted"
-        onExportClick={handleDownloadPublished}
-        exportDisabled={!data?.published?.length}
-        exportLabel="Download published"
       />
       <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
     </>

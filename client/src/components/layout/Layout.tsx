@@ -5,12 +5,6 @@ import { APP_NAME, APP_VERSION, APP_COPYRIGHT } from "../../utils/appMeta";
 interface LayoutProps {
   leftPanel: ReactNode;
   rightPanel: ReactNode;
-  onExportClick?: () => void;
-  exportDisabled?: boolean;
-  exportLabel?: string;
-  onReportClick?: () => void;
-  reportDisabled?: boolean;
-  reportLabel?: string;
   onHelpClick?: () => void;
   onThemeToggle?: () => void;
   theme?: "light" | "dark";
@@ -19,12 +13,6 @@ interface LayoutProps {
 export function Layout({
   leftPanel,
   rightPanel,
-  onExportClick,
-  exportDisabled = false,
-  exportLabel = "Download published",
-  onReportClick,
-  reportDisabled = false,
-  reportLabel = "Download predicted",
   onHelpClick,
   onThemeToggle,
   theme = "light",
@@ -116,24 +104,6 @@ export function Layout({
                 </svg>
                 <span className="hidden sm:inline">Help</span>
               </span>
-            </Button>
-          )}
-          {onReportClick && (
-            <Button
-              variant="primary"
-              onClick={onReportClick}
-              disabled={reportDisabled}
-            >
-              {reportLabel}
-            </Button>
-          )}
-          {onExportClick && (
-            <Button
-              variant="primary"
-              onClick={onExportClick}
-              disabled={exportDisabled}
-            >
-              {exportLabel}
             </Button>
           )}
         </div>
