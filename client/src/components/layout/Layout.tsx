@@ -30,9 +30,7 @@ export function Layout({
           <div className="h-9 w-9 shrink-0 rounded-md bg-gradient-to-br from-[#255CF4] to-[#6366f1] flex items-center justify-center">
             <img src="/icon.svg" alt="" className="h-5 w-5 shrink-0" />
           </div>
-          <h1
-            className="min-w-0 truncate font-display text-xl sm:text-[22px] font-semibold leading-tight tracking-tight text-[var(--color-accent)]"
-          >
+          <h1 className="min-w-0 truncate font-display text-xl sm:text-[22px] font-semibold leading-tight tracking-tight text-[var(--color-accent)]">
             {APP_NAME}
           </h1>
         </div>

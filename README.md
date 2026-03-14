@@ -31,10 +31,10 @@ This creates a Python venv at `.venv` and installs Biopython. Requires Python 3 
 
 ## Commands
 
-| Command                 | Description                                              |
-| ----------------------- | -------------------------------------------------------- |
-| `npm run setup:msa`      | One-time setup: create Python venv + install Biopython   |
-| `npm run dev`            | Run development (port 3000)                              |
+| Command               | Description                                            |
+| --------------------- | ------------------------------------------------------ |
+| `npm run setup:msa`   | One-time setup: create Python venv + install Biopython |
+| `npm run dev`         | Run development (port 3000)                            |
 | `npm run build`       | Build for production                                   |
 | `npm start`           | Build and run production (port 5398)                   |
 | `npm run preview`     | Preview built client                                   |
