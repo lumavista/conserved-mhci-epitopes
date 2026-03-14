@@ -36,7 +36,7 @@ export function Switch({
       <span
         className={
           "block h-5 w-5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm transition-transform " +
-          (checked ? "translate-x-6" : "translate-x-0.5")
+          (checked ? "translate-x-5" : "translate-x-0.5")
         }
         aria-hidden
       />

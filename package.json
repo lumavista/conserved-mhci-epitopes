@@ -1,6 +1,6 @@
 {
   "name": "mhc-demo-app",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Conserved Human MHC-I Epitopes - Alignment-consistent consensus prediction",

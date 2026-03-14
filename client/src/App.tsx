@@ -7,7 +7,7 @@ import { MhcOverviewPlot } from "./components/MhcOverviewPlot";
 import { PredictedTable } from "./components/PredictedTable";
 import { PublishedTable } from "./components/PublishedTable";
 import { HelpModal } from "./components/HelpModal";
-import { Card, CardContent } from "./components/ui";
+import { Card, CardContent, Callout } from "./components/ui";
 import { useMhcPrediction } from "./hooks/useMhcPrediction";
 import { PredictionProgress } from "./components/PredictionProgress";
 import { downloadPredictedExcel, downloadPublishedExcel } from "./utils/exportExcel";
@@ -65,14 +65,12 @@ function AppContent() {
   );
 
   const rightPanel = (
-    <div className="mx-auto max-w-7xl space-y-4">
+    <>
       {loading && progress && <PredictionProgress progress={progress} />}
       {error && (
-        <Card className="border-[var(--color-critical)]">
-          <CardContent>
-            <p className="text-[var(--color-critical)]">{error.message}</p>
-          </CardContent>
-        </Card>
+        <Callout variant="error" title="Error">
+          {error.message}
+        </Callout>
       )}
 
       {!data && !loading && !error && (
@@ -147,11 +145,7 @@ function AppContent() {
           />
         </>
       )}
-
-      <footer className="border-t border-[var(--color-border)] pt-4 font-mono text-[10px] text-[var(--color-text-muted)]">
-        Version 0.9.0 · © 2025 LumaVista Bio · IEDB MHC Binding API
-      </footer>
-    </div>
+    </>
   );
 
   return (
@@ -162,6 +156,12 @@ function AppContent() {
         onHelpClick={() => setHelpOpen(true)}
         onThemeToggle={toggleTheme}
         theme={theme}
+        onReportClick={handleDownloadPredicted}
+        reportDisabled={!data?.predicted?.length}
+        reportLabel="Download predicted"
+        onExportClick={handleDownloadPublished}
+        exportDisabled={!data?.published?.length}
+        exportLabel="Download published"
       />
       <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
     </>
