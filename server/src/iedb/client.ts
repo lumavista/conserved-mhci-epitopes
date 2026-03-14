@@ -73,7 +73,20 @@ export async function queryIedb(
       });
       clearTimeout(timeout);
 
-      const text = await res.text();
+      let text: string;
+      try {
+        text = await res.text();
+      } catch (bodyErr) {
+        const msg =
+          bodyErr instanceof Error ? bodyErr.message : String(bodyErr);
+        if (res.status !== 200) {
+          throw new Error(
+            `IEDB HTTP ${res.status} (allele=${allele} length=${length} seqLen=${sequence.length}) — response body read failed: ${msg}`,
+            { cause: bodyErr instanceof Error ? bodyErr : new Error(String(bodyErr)) }
+          );
+        }
+        throw bodyErr;
+      }
 
       if (res.status !== 200) {
         const bodyPreview = text.slice(0, 800).replace(/\n/g, " ");
